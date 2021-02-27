@@ -1,16 +1,11 @@
-﻿using System;
-using InsuranceRegistrationAPI.Contexts;
+﻿using InsuranceRegistrationAPI.Contexts;
 using InsuranceRegistrationAPI.Models;
 
 namespace InsuranceRegistrationAPI.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : BaseRepository, ICustomerRepository
     {
-        private AppDbContext _context;
-        public CustomerRepository(AppDbContext context)
-        {
-            _context = context;
-        }
+        public CustomerRepository(AppDbContext context) : base(context) { }
 
         public void AddCustomer(Customer customer)
         {
