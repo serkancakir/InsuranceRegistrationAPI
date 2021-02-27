@@ -27,9 +27,12 @@ namespace InsuranceRegistrationAPI.Controllers
         [Route("Register")]
         public IActionResult Register([FromBody] CustomerDTO customerInformation)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Keys);
+            }
             var customer = _mapper.Map<CustomerDTO, Customer>(customerInformation);
             var result = _customerService.CreateCustomer(customer);
-
 
             var categoryResource = _mapper.Map<Customer, CustomerDTO>(result);
             return Ok(categoryResource.CustomerId);
