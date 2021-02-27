@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using InsuranceRegistrationAPI.Controllers;
 using InsuranceRegistrationAPI.DTO;
 using InsuranceRegistrationAPI.Mappings;
@@ -43,7 +44,7 @@ namespace InsuranceRegistrationAPITest
         }
 
         [TestMethod]
-        public void RegisterTest()
+        public void SuccessfulRegisterTest()
         {
             CustomerDTO customerInfo = new CustomerDTO
             {
@@ -58,6 +59,25 @@ namespace InsuranceRegistrationAPITest
             Assert.IsNotNull(result);
             Assert.AreEqual(1, ((OkObjectResult)result).Value);
             Assert.AreEqual(Microsoft.AspNetCore.Http.StatusCodes.Status200OK, ((OkObjectResult)result).StatusCode);
+        }
+
+        [TestMethod]
+        public void FailedRegisterTest()
+        {
+            mockService.Setup(x => x.CreateCustomer(It.IsAny<Customer>()))
+                .Throws(new Exception());
+            controller = new RegistrationController(mockService.Object, mapper);
+
+            CustomerDTO customerInfo = new CustomerDTO
+            {
+                CustomerName = "Serkan",
+                CustomerSurname = "Cakir",
+                Email = "test_-.120sd@asd_-.123.co.uk"
+
+            };
+            var result = controller.Register(customerInfo);
+
+            Assert.AreEqual(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, ((ObjectResult)result).StatusCode);
         }
     }
 }
