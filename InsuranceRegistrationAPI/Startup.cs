@@ -1,3 +1,4 @@
+using InsuranceRegistrationAPI.Mappings;
 using InsuranceRegistrationAPI.Repositories;
 using InsuranceRegistrationAPI.Services;
 using Microsoft.AspNetCore.Builder;
@@ -20,6 +21,7 @@ namespace InsuranceRegistrationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(ResourceToModelProfile));
             services.AddControllers();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustomerService, CustomerService>();

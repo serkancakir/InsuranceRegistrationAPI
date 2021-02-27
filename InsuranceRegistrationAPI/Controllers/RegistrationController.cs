@@ -1,4 +1,6 @@
-﻿using InsuranceRegistrationAPI.Models;
+﻿using AutoMapper;
+using InsuranceRegistrationAPI.DTO;
+using InsuranceRegistrationAPI.Models;
 using InsuranceRegistrationAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +10,11 @@ namespace InsuranceRegistrationAPI.Controllers
     public class RegistrationController : Controller
     {
         private readonly ICustomerService _customerService;
-        public RegistrationController(ICustomerService customerService)
+        private readonly IMapper _mapper;
+        public RegistrationController(ICustomerService customerService, IMapper mapper)
         {
             _customerService = customerService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,11 +25,14 @@ namespace InsuranceRegistrationAPI.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public IActionResult Register([FromBody] Customer customerInformation)
+        public IActionResult Register([FromBody] CustomerDTO customerInformation)
         {
-            var result = _customerService.CreateCustomer(customerInformation);
+            var customer = _mapper.Map<CustomerDTO, Customer>(customerInformation);
+            var result = _customerService.CreateCustomer(customer);
 
-            return Ok(result.CustomerId);
+
+            var categoryResource = _mapper.Map<Customer, CustomerDTO>(result);
+            return Ok(categoryResource.CustomerId);
         }
     }
 }
